@@ -18,7 +18,7 @@
  * @typedef {Object} frappe.ui.Page
  */
 
-frappe.ui.make_app_page = function (opts) {
+frappe.ui.make_app_embed = function (opts) {
 	opts.parent.page = new frappe.ui.Page(opts);
 	return opts.parent.page;
 };
@@ -29,7 +29,7 @@ frappe.ui.Page = class Page {
 	constructor(opts) {
 		$.extend(this, opts);
 
-		this.set_document_title = true;
+		this.set_document_title = false;
 		this.buttons = {};
 		this.fields_dict = {};
 		this.views = {};
@@ -85,8 +85,7 @@ frappe.ui.Page = class Page {
 	}
 
 	add_main_section() {
-		$(frappe.render_template("page", {})).appendTo(this.wrapper);
-		debugger;
+		$(frappe.render_template("embed", {})).appendTo(this.wrapper);
 		if (this.single_column) {
 			// nesting under col-sm-12 for consistency
 			this.add_view(
@@ -155,7 +154,7 @@ frappe.ui.Page = class Page {
 
 		this.card_layout && this.main.addClass("frappe-card");
 
-		// keyboard shortcuts
+		//keyboard shortcuts
 		let menu_btn = this.menu_btn_group.find("button");
 		menu_btn.attr("title", __("Menu")).tooltip({ delay: { show: 600, hide: 100 } });
 		frappe.ui.keys

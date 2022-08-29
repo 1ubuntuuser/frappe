@@ -165,6 +165,11 @@ export default {
       regex: /https:\/\/miro.com\/\S+(\S{12})\/(\S+)?/,
       embedUrl: 'https://miro.com/app/live-embed/<%= remote_id %>',
       html: '<iframe width="700" height="500" style="margin: 0 auto;" allowFullScreen frameBorder="0" scrolling="no"></iframe>',
+    },
+		view: {
+      regex: /https:\/\/miro.com\/\S+(\S{12})\/(\S+)?/,
+      embedUrl: 'https://miro.com/app/live-embed/<%= remote_id %>',	
+      html: '<div class="page-wrapper"><div class="page-content"><div class="workflow-button-area btn-group pull-right hide"></div><div class="clearfix"></div></div></div>',
     }
   };
   

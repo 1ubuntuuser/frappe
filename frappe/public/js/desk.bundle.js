@@ -25,6 +25,8 @@ import "./frappe/microtemplate.js";
 
 import "./frappe/ui/page.html";
 import "./frappe/ui/page.js";
+import "./frappe/ui/embed.html";
+import "./frappe/ui/embed.js";
 import "./frappe/ui/slides.js";
 // import "./frappe/ui/onboarding_dialog.js";
 import "./frappe/ui/find.js";

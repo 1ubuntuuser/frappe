@@ -1,8 +1,10 @@
 //Code adapted from https://github.com/editor-js/embed (MIT)
 import Widget from "./base_widget.js";
 import Embed from './../views/workspace/blocks/embed.js';
+//import './../router.js'
+
 //import { debounce } from 'debounce';
-//npm install debounce was run
+//npm install debounce was required
 frappe.provide("frappe.utils");
 
 export default class EmbedWidget extends Widget {
@@ -44,6 +46,32 @@ export default class EmbedWidget extends Widget {
 			this.body.empty();
 			this.set_body();
 		});
+	}
+
+	render_embed(path) {
+		// create the page generator (factory) object and call `show`
+		// if there is no generator, render the `Page` object
+		debugger;
+		const route = frappe.router.get_route(path);
+		route.push("embed");
+		const factory = frappe.utils.to_title_case(route[0]);
+
+		if (route[1] && frappe.views[factory + "Factory"]) {
+			route[0] = factory;
+			// has a view generator, generate!
+			if (!frappe.view_factory[factory]) {
+				frappe.view_factory[factory] = new frappe.views[factory + "Factory"]();
+			}
+
+			//frappe.view_factory[factory].make_embed();
+			return frappe.make_embed(false,'List/Project/Kanban/Products')
+		} else {
+			// show page
+			const route_name = frappe.utils.xss_sanitise(route[0]);
+			if (frappe.views.pageview) {
+				frappe.views.pageview.show(route_name);
+			}
+		}
 	}
 
 	/**
@@ -100,9 +128,12 @@ export default class EmbedWidget extends Widget {
 		this.loading.appendTo(this.body);
 
 		try {
+
 			const { regex, embedUrl, width, height, id = (ids) => ids.shift() } = Embed.services[this.service];
-			const result = regex.exec(this.source).slice(1);
-			this.embed = embedUrl.replace(/<%= remote_id %>/g, id(result));
+			if (this.service != 'view') {
+				const result = regex.exec(this.source).slice(1);
+				this.embed = embedUrl.replace(/<%= remote_id %>/g, id(result));
+			}
 			this._data = {
 				service: this.service,
 				source: this.source,
@@ -117,7 +148,7 @@ export default class EmbedWidget extends Widget {
 				return container;
 			}
 
-			const { html } = Embed.services[this.service];
+			
 			//not sure how to enable this
 			//if (Embed.checkServiceConfig(regex, embedUrl, width, height, id )) {
 			//	window.alert('yay!')
@@ -129,10 +160,16 @@ export default class EmbedWidget extends Widget {
 			caption.contentEditable = false;
 			caption.innerHTML = this.caption || '';
 
-			template.innerHTML = html;
-			template.content.firstChild.setAttribute('src', this.embed);
-			template.content.firstChild.setAttribute('height', this.i_height);
-			template.content.firstChild.setAttribute('width', this.i_width);
+			if (this.service != 'view') {
+				const { html } = Embed.services[this.service];
+				template.innerHTML = html;
+				template.content.firstChild.setAttribute('src', this.embed);
+				template.content.firstChild.setAttribute('height', this.i_height);
+				template.content.firstChild.setAttribute('width', this.i_width);
+			} else {
+				const htmlEmbed = this.render_embed(this.source);
+				template.innerHTML = htmlEmbed.innerHTML;
+			}
 
 			const embedIsReady = this.embedIsReady(container);
 			container.appendChild(template.content.firstChild);

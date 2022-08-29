@@ -57,7 +57,7 @@
    "fieldname": "service",
    "fieldtype": "Select",
    "label": "Service to Use",
-   "options": "youtube\nvimeo\naparat\ncoub\nimgur\ngfycat\ncodepen\npinterest\ntwitter\ntwitch-video\ntwitch-channel\nmiro\nyandex-music-track\nvine\nfacebook\ninstagram"
+   "options": "view\nyoutube\nvimeo\naparat\ncoub\nimgur\ngfycat\ncodepen\npinterest\ntwitter\ntwitch-video\ntwitch-channel\nmiro\nyandex-music-track\nvine\nfacebook\ninstagram"
   },
   {
    "fieldname": "source",
@@ -87,7 +87,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-08-23 13:39:36.752913",
+ "modified": "2022-08-26 15:10:12.825576",
  "modified_by": "Administrator",
  "module": "Desk",
  "name": "Workspace Embed",

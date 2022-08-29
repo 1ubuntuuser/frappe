@@ -77,6 +77,7 @@ $("body").on("click", "a", function (e) {
 frappe.router = {
 	current_route: null,
 	routes: {},
+	location: window.location,
 	factory_views: ["form", "list", "report", "tree", "print", "dashboard"],
 	list_views: [
 		"list",
@@ -115,11 +116,32 @@ frappe.router = {
 		}
 	},
 
+	get_route (url) {
+		const embedurl = new URL(url)
+		debugger;
+		// overide location data
+		// resolve the route from the URL or hash
+		// translate it so the objects are well defined
+		this.location = {};
+		this.location.pathname= embedurl.pathname;
+		this.location.hash= embedurl.href;
+		this.location.search= embedurl.search;
+		if (!frappe.app) return;
+
+		let sub_path = this.get_sub_path();
+		if (this.re_route(sub_path)) return;
+
+		this.current_sub_path = sub_path;
+		this.current_route = this.parse();
+		this.location=window.location;
+		return this.current_route;
+	},
+
 	route() {
 		// resolve the route from the URL or hash
 		// translate it so the objects are well defined
 		// and render the page as required
-
+		this.location = window.location;
 		if (!frappe.app) return;
 
 		let sub_path = this.get_sub_path();
@@ -137,7 +159,7 @@ frappe.router = {
 		route = this.get_sub_path_string(route).split("/");
 		if (!route) return [];
 		route = $.map(route, this.decode_component);
-		this.set_route_options_from_url();
+		this.set_route_options_from_url();//this may effect embeds unintentionally
 		return this.convert_to_standard_route(route);
 	},
 
@@ -388,7 +410,7 @@ frappe.router = {
 
 	push_state(url) {
 		// change the URL and call the router
-		if (window.location.pathname !== url) {
+		if (this.location.pathname !== url) {
 			// push/replace state so the browser looks fine
 			const method = frappe.route_flags.replace_route ? "replaceState" : "pushState";
 			history[method](null, null, url);
@@ -402,10 +424,10 @@ frappe.router = {
 		// return clean sub_path from hash or url
 		// supports both v1 and v2 routing
 		if (!route) {
-			route = window.location.pathname;
+			route = this.location.pathname;
 			if (route.includes("app#")) {
 				// to support v1
-				route = window.location.hash;
+				route = this.location.hash;
 			}
 		}
 
@@ -431,7 +453,7 @@ frappe.router = {
 
 	set_route_options_from_url() {
 		// set query parameters as frappe.route_options
-		let query_string = window.location.search;
+		let query_string = this.location.search;
 
 		if (!frappe.route_options) {
 			frappe.route_options = {};

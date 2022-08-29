@@ -207,7 +207,7 @@ class EmbedDialog extends WidgetDialog {
 				fieldtype: "Select",
 				fieldname: "service",
 				label: "Embed Service",
-				options: "youtube\nvimeo\naparat\ncou\nBimgur\ngfycat\ncodepen\npinterest\ntwitter\ntwitch-video\ntwitch-channel\nmiro\nyandex-music-track\nvine\nfacebook\ninstagram",
+				options: "view\nyoutube\nvimeo\naparat\ncou\nBimgur\ngfycat\ncodepen\npinterest\ntwitter\ntwitch-video\ntwitch-channel\nmiro\nyandex-music-track\nvine\nfacebook\ninstagram",
 				reqd: 1,
 			},
 			{

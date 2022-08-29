@@ -8,7 +8,6 @@ frappe.views.ListFactory = class ListFactory extends frappe.views.Factory {
 	make(route) {
 		const me = this;
 		const doctype = route[1];
-
 		// List / Gantt / Kanban / etc
 		let view_name = frappe.utils.to_title_case(route[2] || "List");
 
@@ -24,13 +23,24 @@ frappe.views.ListFactory = class ListFactory extends frappe.views.Factory {
 			// view can have custom routing logic
 			return;
 		}
-
+		var embed=false;
 		frappe.provide("frappe.views.list_view." + doctype);
+		if (route[route.length-1]=="embed") {
+			route.pop(); //remove from route
+			embed=true;
+		}
 
-		frappe.views.list_view[me.page_name] = new view_class({
-			doctype: doctype,
-			parent: me.make_page(true, me.page_name),
-		});
+		if (embed) {
+			frappe.views.list_view[me.page_name] = new view_class({
+				doctype: doctype,
+				parent: me.make_embed(true, me.page_name),
+			});
+		} else {
+			frappe.views.list_view[me.page_name] = new view_class({
+				doctype: doctype,
+				parent: me.make_page(true, me.page_name),
+			});
+		}
 
 		me.set_cur_list();
 	}
