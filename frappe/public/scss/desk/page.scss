@@ -99,6 +99,26 @@
 	}
 }
 
+.page-head {
+	z-index: 4;
+	position: sticky;
+	top: var(--navbar-height);
+	background: var(--bg-color);
+	margin-bottom: 5px;
+	transition: 0.5s top;
+	.page-head-content {
+		height: var(--page-head-height);
+	}
+	&.drop-shadow {
+		box-shadow: var(--shadow-sm);
+		background-color: var(--fg-color) !important;
+	}
+}
+
+.embed-head {
+	position: inherit;
+}
+
 .page-form {
 	margin: 0;
 	padding: var(--padding-sm);

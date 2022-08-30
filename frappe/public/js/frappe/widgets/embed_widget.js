@@ -48,7 +48,7 @@ export default class EmbedWidget extends Widget {
 		});
 	}
 
-	render_embed(path) {
+	render_embed(node, path) {
 		// create the page generator (factory) object and call `show`
 		// if there is no generator, render the `Page` object
 
@@ -62,8 +62,24 @@ export default class EmbedWidget extends Widget {
 			if (!frappe.view_factory[factory]) {
 				frappe.view_factory[factory] = new frappe.views[factory + "Factory"]();
 			}
-			//frappe.view_factory[factory].make_embed();
-			return frappe.make_embed(false, "List/Project/Kanban/Products");
+
+			this.page_name = route.join("/");
+			frappe.view_factory[factory].show_embed(route, this.page_name);
+			this.embed_view = frappe.pages[this.page_name];
+
+			//wrapping in iframe worked but all css props need to be loaded... lame.
+			//this.wrapper = $(`<iframe id="view1"></iframe>`);
+			//see embed code embedready event
+
+			//These should pronably be set in css files.
+			$(this.embed_view).css("width", "100%");
+			this.wrapper = $(`<div style="display: flex"></div>`);
+			//this.wrapper.css("height", this.i_height);
+			this.wrapper.css("width", this.i_width);
+			//turn of sticky heading
+			//$('.page-head').css('postion', 'inherit');
+			$(this.embed_view).appendTo(this.wrapper);
+			this.wrapper.appendTo(this.body);
 		} else {
 			// show page
 			const route_name = frappe.utils.xss_sanitise(route[0]);
@@ -140,9 +156,9 @@ export default class EmbedWidget extends Widget {
 			}
 
 			//testing
-			this.source = "http://marqunity.localhost:8000/app/project/view/kanban/Products";
-			this.service = "view";
-			this.label = "kanban!";
+			//this.source = "http://marqunity.localhost:8000/app/project/view/kanban/Products";
+			//this.service = "view";
+			//this.label = "kanban!";
 
 			this._data = {
 				service: this.service,
@@ -178,10 +194,10 @@ export default class EmbedWidget extends Widget {
 				3;
 				container.appendChild(template.content.firstChild);
 			} else {
-				const htmlEmbed = this.render_embed(this.source);
+				const htmlEmbed = this.render_embed(this.body, this.source);
 				//template = htmlEmbed;
 				//template.innerHTML = '<p>Yay!</p>'
-				container.appendChild(htmlEmbed);
+				//container.appendChild(htmlEmbed);
 				//htmlEmbed.show();
 				//$(htmlEmbed).show;
 			}
@@ -190,11 +206,14 @@ export default class EmbedWidget extends Widget {
 
 			container.appendChild(caption);
 			embedIsReady.then(() => {
+				//var iframeBody = this.wrapper.contents().find("body");
+				//iframeBody.append(this.embed_view)
+
 				this.body.remove(".chart-loading-state");
 			});
-			this.body.empty();
-			this.wrapper = $(`<div>` + container.innerHTML + `</div>`);
-			this.wrapper.appendTo(this.body);
+			//this.body.empty();
+			//this.wrapper = $(`<div>` + container.innerHTML + `</div>`);
+			//this.wrapper.appendTo(this.body);
 		} catch (error) {
 			this.body.empty();
 			//not sure if this is best practice but will at least inform the user something went wrong.

@@ -4,6 +4,7 @@ frappe.provide("frappe.views");
 
 frappe.views.KanbanView = class KanbanView extends frappe.views.ListView {
 	static load_last_view() {
+		debugger;
 		const route = frappe.get_route();
 		if (route.length === 3) {
 			const doctype = route[1];
@@ -70,6 +71,7 @@ frappe.views.KanbanView = class KanbanView extends frappe.views.ListView {
 	}
 
 	setup_view() {
+		debugger;
 		if (this.board.columns.length > 5) {
 			this.page.container.addClass("full-width");
 		}
