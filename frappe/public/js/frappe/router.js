@@ -116,16 +116,15 @@ frappe.router = {
 		}
 	},
 
-	get_route (url) {
-		const embedurl = new URL(url)
-		debugger;
+	get_route(url) {
+		const embedurl = new URL(url);
 		// overide location data
 		// resolve the route from the URL or hash
 		// translate it so the objects are well defined
 		this.location = {};
-		this.location.pathname= embedurl.pathname;
-		this.location.hash= embedurl.href;
-		this.location.search= embedurl.search;
+		this.location.pathname = embedurl.pathname;
+		this.location.hash = embedurl.href;
+		this.location.search = embedurl.search;
 		if (!frappe.app) return;
 
 		let sub_path = this.get_sub_path();
@@ -133,7 +132,7 @@ frappe.router = {
 
 		this.current_sub_path = sub_path;
 		this.current_route = this.parse();
-		this.location=window.location;
+		this.location = window.location;
 		return this.current_route;
 	},
 
@@ -159,7 +158,7 @@ frappe.router = {
 		route = this.get_sub_path_string(route).split("/");
 		if (!route) return [];
 		route = $.map(route, this.decode_component);
-		this.set_route_options_from_url();//this may effect embeds unintentionally
+		this.set_route_options_from_url(); //this may effect embeds unintentionally
 		return this.convert_to_standard_route(route);
 	},
 

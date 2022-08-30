@@ -97,19 +97,19 @@ frappe.views.Container = class Container {
 		}
 
 		// hide dialog
-		if (window.cur_dialog && cur_dialog.display && !cur_dialog.keep_open) {
-			if (!cur_dialog.minimizable) {
-				cur_dialog.hide();
-			} else if (!cur_dialog.is_minimized) {
-				cur_dialog.toggle_minimize();
-			}
-		}
+		// if (window.cur_dialog && cur_dialog.display && !cur_dialog.keep_open) {
+		// 	if (!cur_dialog.minimizable) {
+		// 		cur_dialog.hide();
+		// 	} else if (!cur_dialog.is_minimized) {
+		// 		cur_dialog.toggle_minimize();
+		// 	}
+		// }
 
 		// hide current
-		if (this.page && this.page != page) {
-			$(this.page).hide();
-			$(this.page).trigger("hide");
-		}
+		// if (this.page && this.page != page) {
+		// 	$(this.page).hide();
+		// 	$(this.page).trigger("hide");
+		// }
 
 		// show new
 		if (!this.page || this.page != page) {
@@ -118,12 +118,12 @@ frappe.views.Container = class Container {
 			$(this.page).show();
 		}
 
-		$(document).trigger("page-change");
+		//$(document).trigger("page-change");
 
-		this.page._route = frappe.router.get_sub_path();
+		//this.page._route = frappe.router.get_sub_path();
 		$(this.page).trigger("show");
-		!this.page.disable_scroll_to_top && frappe.utils.scroll_to(0);
-		frappe.breadcrumbs.update();
+		//!this.page.disable_scroll_to_top && frappe.utils.scroll_to(0);
+		//frappe.breadcrumbs.update();
 
 		return this.page;
 	}

@@ -1,6 +1,6 @@
 //Code adapted from https://github.com/editor-js/embed (MIT)
 import Widget from "./base_widget.js";
-import Embed from './../views/workspace/blocks/embed.js';
+import Embed from "./../views/workspace/blocks/embed.js";
 //import './../router.js'
 
 //import { debounce } from 'debounce';
@@ -23,7 +23,7 @@ export default class EmbedWidget extends Widget {
 			embed: this.embed,
 			i_width: this.i_width,
 			i_height: this.i_height,
-			caption: this.caption
+			caption: this.caption,
 			//embed_filter: this.embed_filter
 		};
 	}
@@ -37,7 +37,7 @@ export default class EmbedWidget extends Widget {
 	setup_refresh_list_button() {
 		this.refresh_list = $(
 			`<div class="refresh-list btn btn-xs pull-right" title="${__("Refresh List")}">
-				${frappe.utils.icon('refresh', 'sm')}
+				${frappe.utils.icon("refresh", "sm")}
 			</div>`
 		);
 
@@ -51,7 +51,7 @@ export default class EmbedWidget extends Widget {
 	render_embed(path) {
 		// create the page generator (factory) object and call `show`
 		// if there is no generator, render the `Page` object
-		debugger;
+
 		const route = frappe.router.get_route(path);
 		route.push("embed");
 		const factory = frappe.utils.to_title_case(route[0]);
@@ -62,9 +62,8 @@ export default class EmbedWidget extends Widget {
 			if (!frappe.view_factory[factory]) {
 				frappe.view_factory[factory] = new frappe.views[factory + "Factory"]();
 			}
-
 			//frappe.view_factory[factory].make_embed();
-			return frappe.make_embed(false,'List/Project/Kanban/Products')
+			return frappe.make_embed(false, "List/Project/Kanban/Products");
 		} else {
 			// show page
 			const route_name = frappe.utils.xss_sanitise(route[0]);
@@ -75,11 +74,11 @@ export default class EmbedWidget extends Widget {
 	}
 
 	/**
-   * Checks that mutations in DOM have finished after appending iframe content
-   *
-   * @param {HTMLElement} targetNode - HTML-element mutations of which to listen
-   * @returns {Promise<any>} - result that all mutations have finished
-   */
+	 * Checks that mutations in DOM have finished after appending iframe content
+	 *
+	 * @param {HTMLElement} targetNode - HTML-element mutations of which to listen
+	 * @returns {Promise<any>} - result that all mutations have finished
+	 */
 	embedIsReady(targetNode) {
 		const PRELOADER_DELAY = 450;
 
@@ -102,19 +101,19 @@ export default class EmbedWidget extends Widget {
 		let meta = frappe.get_meta(this.document_type);
 		if (!this.service) {
 			this.loading = $(
-				`<div class="chart-loading-state text-muted" style="height: ${this.height}px;">${__(
-					"No service selected..."
-				)}</div>`
+				`<div class="chart-loading-state text-muted" style="height: ${
+					this.height
+				}px;">${__("No service selected...")}</div>`
 			);
 			this.body.empty();
 			this.loading.appendTo(this.body);
-		} 
+		}
 
 		if (!this.source) {
 			this.loading = $(
-				`<div class="chart-loading-state text-muted" style="height: ${this.height}px;">${__(
-					"No source address entered"
-				)}</div>`
+				`<div class="chart-loading-state text-muted" style="height: ${
+					this.height
+				}px;">${__("No source address entered")}</div>`
 			);
 			this.body.empty();
 			this.loading.appendTo(this.body);
@@ -128,66 +127,78 @@ export default class EmbedWidget extends Widget {
 		this.loading.appendTo(this.body);
 
 		try {
-
-			const { regex, embedUrl, width, height, id = (ids) => ids.shift() } = Embed.services[this.service];
-			if (this.service != 'view') {
+			const {
+				regex,
+				embedUrl,
+				width,
+				height,
+				id = (ids) => ids.shift(),
+			} = Embed.services[this.service];
+			if (this.service != "view") {
 				const result = regex.exec(this.source).slice(1);
 				this.embed = embedUrl.replace(/<%= remote_id %>/g, id(result));
 			}
+
+			//testing
+			this.source = "http://marqunity.localhost:8000/app/project/view/kanban/Products";
+			this.service = "view";
+			this.label = "kanban!";
+
 			this._data = {
 				service: this.service,
 				source: this.source,
 				embed: this.embed,
 				width: this.i_width,
 				i_height: this.i_height,
-				caption: this.caption || '',
+				caption: this.caption || "",
 			};
 			if (!this.service) {
-				const container = document.createElement('div');
+				const container = document.createElement("div");
 				//this.wrapper = container;
 				return container;
 			}
 
-			
 			//not sure how to enable this
 			//if (Embed.checkServiceConfig(regex, embedUrl, width, height, id )) {
 			//	window.alert('yay!')
 			//};
 
-			const container = document.createElement('div');
-			const caption = document.createElement('div');
-			const template = document.createElement('template');
+			const container = document.createElement("div");
+			const caption = document.createElement("div");
+			const template = document.createElement("template");
 			caption.contentEditable = false;
-			caption.innerHTML = this.caption || '';
+			caption.innerHTML = this.caption || "";
 
-			if (this.service != 'view') {
+			if (this.service != "view") {
 				const { html } = Embed.services[this.service];
 				template.innerHTML = html;
-				template.content.firstChild.setAttribute('src', this.embed);
-				template.content.firstChild.setAttribute('height', this.i_height);
-				template.content.firstChild.setAttribute('width', this.i_width);
+				template.content.firstChild.setAttribute("src", this.embed);
+				template.content.firstChild.setAttribute("height", this.i_height);
+				template.content.firstChild.setAttribute("width", this.i_width);
+				3;
+				container.appendChild(template.content.firstChild);
 			} else {
 				const htmlEmbed = this.render_embed(this.source);
-				template.innerHTML = htmlEmbed.innerHTML;
+				//template = htmlEmbed;
+				//template.innerHTML = '<p>Yay!</p>'
+				container.appendChild(htmlEmbed);
+				//htmlEmbed.show();
+				//$(htmlEmbed).show;
 			}
 
 			const embedIsReady = this.embedIsReady(container);
-			container.appendChild(template.content.firstChild);
+
 			container.appendChild(caption);
-			embedIsReady
-				.then(() => {
-					this.body.remove(".chart-loading-state");
-				});
+			embedIsReady.then(() => {
+				this.body.remove(".chart-loading-state");
+			});
 			this.body.empty();
 			this.wrapper = $(`<div>` + container.innerHTML + `</div>`);
 			this.wrapper.appendTo(this.body);
-
 		} catch (error) {
 			this.body.empty();
 			//not sure if this is best practice but will at least inform the user something went wrong.
 			frappe.msgprint(error + " - Check embed source field is correct");
 		}
-	
 	}
-
 }

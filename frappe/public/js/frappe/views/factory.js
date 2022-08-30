@@ -38,6 +38,7 @@ frappe.views.Factory = class Factory {
 };
 
 frappe.make_page = function (double_column, page_name) {
+	debugger;
 	if (!page_name) {
 		page_name = frappe.get_route_str();
 	}
@@ -48,7 +49,6 @@ frappe.make_page = function (double_column, page_name) {
 		parent: page,
 		single_column: !double_column,
 	});
-	debugger;
 	frappe.container.change_to(page_name);
 	return page;
 };
@@ -58,8 +58,8 @@ frappe.make_embed = function (double_column, page_name) {
 		page_name = frappe.get_route_str();
 	}
 
+	//const embed = $('<div></div>');
 	const embed = frappe.container.add_page(page_name);
-
 	frappe.ui.make_app_embed({
 		parent: embed,
 		single_column: !double_column,
