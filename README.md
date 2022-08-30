@@ -61,7 +61,7 @@ Full-stack web application framework that uses Python and MariaDB on the server 
 - [ ] Make workspaces edit mode embeds list pretty
 - [ ] Dynamically change options on embed settings dialog when type "view" is selected
 - [ ] Add setting to toggle side and top bars
- 
+- [ ] Clicking links on workspace causes the url to change but does not reload the page
 
 
 ## Table of Contents
