@@ -48,6 +48,22 @@ Full-stack web application framework that uses Python and MariaDB on the server 
 
 > Login for the PWD site: (username: Administrator, password: admin)
 
+## View Embed TODO: Help appreciated :)
+- [ ] Add "Go To View" button
+- [ ] Add dedicated css classes
+- [ ] Code clean up
+- [ ] Handle page reloading (prevent double reload required on workspace save)
+- [ ] test all views
+- [ ] test all views on mobile
+- [ ] Renable custom buttons
+- [ ] Add beter icon for embeds
+- [ ] Fix SQL regression in creating standards
+- [ ] Make workspaces edit mode embeds list pretty
+- [ ] Dynamically change options on embed settings dialog when type "view" is selected
+- [ ] Add setting to toggle side and top bars
+ 
+
+
 ## Table of Contents
 * [Installation](#installation)
 * [Contributing](#contributing)

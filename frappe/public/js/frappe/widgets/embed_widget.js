@@ -32,6 +32,9 @@ export default class EmbedWidget extends Widget {
 	set_actions() {
 		if (this.in_customize_mode) return;
 		this.setup_refresh_list_button();
+		//if (this.service == 'view') {
+		//	this.setup_goto_view_button();
+		//}
 	}
 
 	setup_refresh_list_button() {
@@ -48,7 +51,20 @@ export default class EmbedWidget extends Widget {
 		});
 	}
 
-	render_embed(node, path) {
+	setup_goto_view_button() {
+		this.goto_view = $(
+			`<div class="refresh-list btn btn-xs pull-right" title="${__("Go To View")}">
+				${frappe.utils.icon("shortcut", "sm")}
+			</div>`
+		);
+
+		this.goto_view.appendTo(this.action_area);
+		this.goto_view.on("click", () => {
+			window.alert("not yet coded");
+		});
+	}
+
+	render_embed(path, caption) {
 		// create the page generator (factory) object and call `show`
 		// if there is no generator, render the `Page` object
 
@@ -74,18 +90,23 @@ export default class EmbedWidget extends Widget {
 			//These should pronably be set in css files.
 			$(this.embed_view).css("width", "100%");
 			this.wrapper = $(`<div style="display: flex"></div>`);
-			//this.wrapper.css("height", this.i_height);
 			this.wrapper.css("width", this.i_width);
-			//turn of sticky heading
-			//$('.page-head').css('postion', 'inherit');
+
+			//Hide not yet compatible items
+
+			this.body.empty();
 			$(this.embed_view).appendTo(this.wrapper);
+			//$(this.embed_view).appendTo(caption);
 			this.wrapper.appendTo(this.body);
 		} else {
+			this.wrapper = $(`<p>Unknown view. Embedding pages not yet supported.</p>`);
+
+			this.wrapper.appendTo(this.body);
 			// show page
-			const route_name = frappe.utils.xss_sanitise(route[0]);
-			if (frappe.views.pageview) {
-				frappe.views.pageview.show(route_name);
-			}
+			// const route_name = frappe.utils.xss_sanitise(route[0]);
+			// if (frappe.views.pageview) {
+			// 	frappe.views.pageview.show(route_name);
+			// }
 		}
 	}
 
@@ -191,29 +212,22 @@ export default class EmbedWidget extends Widget {
 				template.content.firstChild.setAttribute("src", this.embed);
 				template.content.firstChild.setAttribute("height", this.i_height);
 				template.content.firstChild.setAttribute("width", this.i_width);
-				3;
+
 				container.appendChild(template.content.firstChild);
+				container.appendChild(caption);
+				this.body.empty();
+				this.wrapper = $(container.innerHTML);
+				this.wrapper.appendTo(this.body);
 			} else {
-				const htmlEmbed = this.render_embed(this.body, this.source);
-				//template = htmlEmbed;
-				//template.innerHTML = '<p>Yay!</p>'
-				//container.appendChild(htmlEmbed);
-				//htmlEmbed.show();
-				//$(htmlEmbed).show;
+				this.render_embed(this.source, caption);
 			}
-
 			const embedIsReady = this.embedIsReady(container);
-
-			container.appendChild(caption);
 			embedIsReady.then(() => {
 				//var iframeBody = this.wrapper.contents().find("body");
 				//iframeBody.append(this.embed_view)
 
 				this.body.remove(".chart-loading-state");
 			});
-			//this.body.empty();
-			//this.wrapper = $(`<div>` + container.innerHTML + `</div>`);
-			//this.wrapper.appendTo(this.body);
 		} catch (error) {
 			this.body.empty();
 			//not sure if this is best practice but will at least inform the user something went wrong.

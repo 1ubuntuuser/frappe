@@ -209,7 +209,6 @@ frappe.ui.Page = class Page {
 	}
 
 	update_sidebar_icon() {
-		debugger;
 		let sidebar_toggle = $(".page-head").find(".sidebar-toggle-btn");
 		let sidebar_toggle_icon = sidebar_toggle.find(".sidebar-toggle-icon");
 		let sidebar_wrapper = this.wrapper.find(".layout-side-section");

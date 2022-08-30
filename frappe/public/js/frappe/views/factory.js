@@ -30,10 +30,8 @@ frappe.views.Factory = class Factory {
 	}
 
 	show_embed(route, page_name) {
-		debugger;
 		this.route = route;
 		this.page_name = page_name;
-		debugger;
 		if (this.before_show && this.before_show() === false) return;
 
 		if (frappe.pages[this.page_name]) {
