@@ -604,6 +604,9 @@ class Email:
 					fname = get_random_filename(content_type=content_type)
 			else:
 				fname = get_random_filename(content_type=content_type)
+			# Don't clobber existing filename
+			while fname in self.cid_map:
+				fname = get_random_filename(content_type=content_type)
 
 			self.attachments.append(
 				{
@@ -984,10 +987,10 @@ class TimerMixin:
 			self.sock.settimeout(self.timeout / 5.0)
 
 	def _getline(self, *args, **kwargs):
-		start_time = time.time()
+		start_time = time.monotonic()
 		ret = self._super._getline(self, *args, **kwargs)
 
-		self.elapsed_time += time.time() - start_time
+		self.elapsed_time += time.monotonic() - start_time
 		if self.timeout and self.elapsed_time > self.timeout:
 			raise EmailTimeoutError
 

@@ -47,8 +47,7 @@ frappe.ui.Page = class Page {
 
 	setup_scroll_handler() {
 		let last_scroll = 0;
-		window.addEventListener(
-			"scroll",
+		$(window).scroll(
 			frappe.utils.throttle(() => {
 				$(".page-head").toggleClass("drop-shadow", !!document.documentElement.scrollTop);
 				let current_scroll = document.documentElement.scrollTop;
@@ -58,8 +57,7 @@ frappe.ui.Page = class Page {
 					$(".page-head").css("top", "var(--navbar-height)");
 				}
 				last_scroll = current_scroll;
-			}),
-			500
+			}, 500)
 		);
 	}
 
@@ -327,13 +325,14 @@ frappe.ui.Page = class Page {
 
 	//--- Menu --//
 
-	add_menu_item(label, click, standard, shortcut) {
+	add_menu_item(label, click, standard, shortcut, show_parent) {
 		return this.add_dropdown_item({
 			label,
 			click,
 			standard,
 			parent: this.menu,
 			shortcut,
+			show_parent,
 		});
 	}
 
@@ -424,7 +423,7 @@ frappe.ui.Page = class Page {
 		icon = null,
 	}) {
 		if (show_parent) {
-			parent.parent().removeClass("hide");
+			parent.parent().removeClass("hide hidden-xl");
 		}
 
 		let $link = this.is_in_group_button_dropdown(parent, "li > a.grey-link > span", label);
@@ -462,7 +461,12 @@ frappe.ui.Page = class Page {
 			`);
 		}
 
-		$link = $li.find("a").on("click", click);
+		$link = $li.find("a").on("click", (e) => {
+			if (e.ctrlKey || e.metaKey) {
+				frappe.open_in_new_tab = true;
+			}
+			return click();
+		});
 
 		if (standard) {
 			$li.appendTo(parent);
@@ -600,6 +604,14 @@ frappe.ui.Page = class Page {
 			let response = action();
 			me.btn_disable_enable(btn, response);
 		};
+		// Add actions as menu item in Mobile View
+		let menu_item_label = group ? `${group} > ${label}` : label;
+		let menu_item = this.add_menu_item(menu_item_label, _action, false, false, false);
+		menu_item.parent().addClass("hidden-xl");
+		if (this.menu_btn_group.hasClass("hide")) {
+			this.menu_btn_group.removeClass("hide").addClass("hidden-xl");
+		}
+
 		if (group) {
 			var $group = this.get_or_add_inner_group_button(group);
 			$(this.inner_toolbar).removeClass("hide");

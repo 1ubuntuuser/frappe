@@ -92,9 +92,15 @@ def delete_doc(
 
 			else:
 				doc = frappe.get_doc(doctype, name)
+				if not (doc.custom or frappe.conf.developer_mode or frappe.flags.in_patch or force):
+					frappe.throw(_("Standard DocType can not be deleted."))
 
 				update_flags(doc, flags, ignore_permissions)
 				check_permission_and_not_submitted(doc)
+				# delete custom table fields using this doctype.
+				frappe.db.delete(
+					"Custom Field", {"options": name, "fieldtype": ("in", frappe.model.table_fields)}
+				)
 				frappe.db.delete("__global_search", {"doctype": name})
 
 			delete_from_table(doctype, name, ignore_doctypes, None)
@@ -358,7 +364,7 @@ def raise_link_exists_exception(doc, reference_doctype, reference_docname, row="
 
 	frappe.throw(
 		_("Cannot delete or cancel because {0} {1} is linked with {2} {3} {4}").format(
-			doc.doctype, doc_link, reference_doctype, reference_link, row
+			_(doc.doctype), doc_link, _(reference_doctype), reference_link, row
 		),
 		frappe.LinkExistsError,
 	)

@@ -20,9 +20,9 @@ TRACEBACK_PATH_PATTERN = re.compile(".*/apps/")
 
 
 def sql(*args, **kwargs):
-	start_time = time.time()
+	start_time = time.monotonic()
 	result = frappe.db._sql(*args, **kwargs)
-	end_time = time.time()
+	end_time = time.monotonic()
 
 	stack = list(get_current_stack_frames())
 	query = sqlparse.format(str(frappe.db.last_query).strip(), keyword_case="upper", reindent=True)
@@ -101,7 +101,9 @@ class Recorder:
 		}
 		frappe.cache().hset(RECORDER_REQUEST_SPARSE_HASH, self.uuid, request_data)
 		frappe.publish_realtime(
-			event="recorder-dump-event", message=json.dumps(request_data, default=str)
+			event="recorder-dump-event",
+			message=json.dumps(request_data, default=str),
+			user="Administrator",
 		)
 
 		self.mark_duplicates()
